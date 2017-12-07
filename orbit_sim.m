@@ -54,12 +54,34 @@ OR_v0 = [4.778887719387938E-01,2.918812388913381E+01,-1.290227195947065E-01]; %k
 
 y0 = [Sun_x0,Earth_x0,Jupiter_x0,Bennu_x0,OR_x0,Sun_v0,Earth_v0,Jupiter_v0,Bennu_v0,OR_v0]';
 
+t_steps = 378;
 t0 = 0; %Sep 9 2016
-tf = 378*24*3600; %Sep 22 2017
-tspan = linspace(t0,tf,379);
+tf = 111*24*3600; %Sep 22 2017 %378 timesteps
+tspan = linspace(t0,tf,112);
 
 options = odeset('AbsTol',1e-10,'RelTol',1e-10);
 
+[Sun_pos,Earth_pos,Jupiter_pos,Bennu_pos,OR_pos,t,Sun_vel,Earth_vel,Jupiter_vel,Bennu_vel,OR_vel] = run_de(tspan,y0,options);
+
+t0 = 0;
+tf = (t_steps - 111).*24.*3600;
+tspan = linspace(t0,tf,t_steps - 110);
+y0 = [Sun_pos(end,:) Earth_pos(end,:) Jupiter_pos(end,:) Bennu_pos(end,:) OR_pos(end,:) Sun_vel(end,:) ...
+    Earth_vel(end,:) Jupiter_vel(end,:) Bennu_vel(end,:) OR_vel(end,:)];
+
+[Sun_pos2,Earth_pos2,Jupiter_pos2,Bennu_pos2,OR_pos2,t2,Sun_vel2,Earth_vel2,Jupiter_vel2,Bennu_vel2,OR_vel2] = run_de(tspan,y0,options);
+
+Sun_pos = [Sun_pos; Sun_pos2];
+Earth_pos = [Earth_pos; Earth_pos2];
+Jupiter_pos = [Jupiter_pos; Jupiter_pos2];
+Bennu_pos = [Bennu_pos; Bennu_pos2];
+OR_pos = [OR_pos; OR_pos2];
+t = [t; t2];
+OR_vel = [OR_vel; OR_vel2];
+
+end
+
+function [Sun_pos,Earth_pos,Jupiter_pos,Bennu_pos,OR_pos,t,Sun_vel,Earth_vel,Jupiter_vel,Bennu_vel,OR_vel] = run_de(tspan,y0,options)
 [t,y] = ode45(@rates,tspan,y0,options);
 Sun_pos = y(:,1:3);
 Earth_pos = y(:,4:6);
@@ -72,5 +94,4 @@ Earth_vel = y(:,19:21);
 Jupiter_vel = y(:,22:24);
 Bennu_vel = y(:,25:27);
 OR_vel = y(:,28:30);
-
 end

@@ -54,13 +54,20 @@ OR_v0 = [4.778887719387938E-01,2.918812388913381E+01,-1.290227195947065E-01]; %k
 
 y0 = [Sun_x0,Earth_x0,Jupiter_x0,Bennu_x0,OR_x0,Sun_v0,Earth_v0,Jupiter_v0,Bennu_v0,OR_v0]';
 
+t_steps = 378;
 t0 = 0; %Sep 9 2016
-tf = 378*24*3600; %Sep 22 2017
-tspan = linspace(t0,tf,379);
+tf = 111*24*3600; %Sep 22 2017 %378 timesteps
+tspan = linspace(t0,tf,112);
 
-options = odeset('MaxStep',0.5.*
+options = odeset('AbsTol',1e-10,'RelTol',1e-10);
 
-[t,y] = ode45(@rates,tspan,y0);
+run_de(tspan,y0,options)
+
+
+end
+
+function [
+[t,y] = ode45(@rates,tspan,y0,options);
 Sun_pos = y(:,1:3);
 Earth_pos = y(:,4:6);
 Jupiter_pos = y(:,7:9);
@@ -72,5 +79,3 @@ Earth_vel = y(:,19:21);
 Jupiter_vel = y(:,22:24);
 Bennu_vel = y(:,25:27);
 OR_vel = y(:,28:30);
-
-end
