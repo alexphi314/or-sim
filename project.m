@@ -108,7 +108,7 @@ Bennu_v0 = VE_Bennu(1,:); %km/s
 OR_x0 = E_OR(1,:); %km
 OR_v0 = VE_OR(1,:); %km/s
 
-figure;axis equal;  hold on; view(3);
+figure;axis equal;  hold on; %view(3);
 %h1 = plot(Sun_pos(:,1),Sun_pos(:,2),'r','DisplayName','Sun');
 %plot(Sun_x0(1),Sun_x0(2),'r*');
 %plot(Sun_pos(end,1),Sun_pos(end,2),'ro');

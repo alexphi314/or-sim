@@ -58,9 +58,9 @@ t0 = 0; %Sep 9 2016
 tf = 378*24*3600; %Sep 22 2017
 tspan = linspace(t0,tf,379);
 
-options = odeset('MaxStep',0.5.*24.*3600);
+options = odeset('MaxStep',0.5.*
 
-[t,y] = ode45(@rates,tspan,y0,options);
+[t,y] = ode45(@rates,tspan,y0);
 Sun_pos = y(:,1:3);
 Earth_pos = y(:,4:6);
 Jupiter_pos = y(:,7:9);
