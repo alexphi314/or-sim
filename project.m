@@ -108,12 +108,12 @@ Bennu_v0 = VE_Bennu(1,:); %km/s
 OR_x0 = E_OR(1,:); %km
 OR_v0 = VE_OR(1,:); %km/s
 
-figure;axis equal;  hold on;
+figure;axis equal;  hold on; view(3);
 %h1 = plot(Sun_pos(:,1),Sun_pos(:,2),'r','DisplayName','Sun');
 %plot(Sun_x0(1),Sun_x0(2),'r*');
 %plot(Sun_pos(end,1),Sun_pos(end,2),'ro');
 plot3(Earth_pos(:,1),Earth_pos(:,2),Earth_pos(:,3),'b','DisplayName','Earth');
-plot3(E_Earth(1:379,1),E_Earth(1:379,2),E_Earth(1:379,3),':r','DisplayName','JPL Earth');
+%plot3(E_Earth(1:379,1),E_Earth(1:379,2),E_Earth(1:379,3),':r','DisplayName','JPL Earth');
 %plot(Earth_x0(1),Earth_x0(2),'b*');
 % plot(Earth_pos(end,1),Earth_pos(end,2),'r*');
 % %plot(Jupiter_pos(:,1),Jupiter_pos(:,2),'r');
@@ -122,9 +122,9 @@ plot3(E_Earth(1:379,1),E_Earth(1:379,2),E_Earth(1:379,3),':r','DisplayName','JPL
 %plot3(E_Bennu(1:379,1),E_Bennu(1:379,2),E_Bennu(1:379,3),'--r');
 % %plot3(Bennu_x0(1),Bennu_x0(2),'k*');
 % %plot3(Bennu_pos(end,1),Bennu_pos(end,2),'ko');
-% h4 = plot(OR_pos(:,1),OR_pos(:,2),'g','DisplayName','Osiris Rex');
+h4 = plot3(OR_pos(:,1),OR_pos(:,2),OR_pos(:,3),'g','DisplayName','Osiris Rex');
 % plot(OR_pos(145,1),OR_pos(145,2),'b*');
-% h5 = plot(E_OR(1:379,1),E_OR(1:379,2),'--k','DisplayName','JPL Osiris Rex');
+h5 = plot3(E_OR(1:379,1),E_OR(1:379,2),E_OR(1:379,3),'--k','DisplayName','JPL Osiris Rex');
 % plot(OR_x0(1),OR_x0(2),'go');
 % plot(OR_pos(end,1),OR_pos(end,2),'g*');
 % legend([h2 h3 h4 h5],'Location','Northwest');
