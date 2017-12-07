@@ -149,4 +149,12 @@ for k = 1:size(OR_veloc,1)
     v(k,1) = norm(VE_OR(k,:));
     v(k,2) = norm(OR_veloc(k,:));
     v(k,3) = abs((v(k,1)-v(k,2))/v(k,1).*100);
+    if k > 1
+        v(k,4) = abs(v(k,1)-v(k-1,1))/v(k-1,1).*100;
+    else
+        v(k,4) = 0;
+    end
 end
+
+[burn_amnt,day] = max(v(:,4));
+fprintf('delta-V %% of %.3f found on Day %i.\n',burn_amnt,day);

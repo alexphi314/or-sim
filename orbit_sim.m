@@ -58,7 +58,7 @@ t0 = 0; %Sep 9 2016
 tf = 378*24*3600; %Sep 22 2017
 tspan = linspace(t0,tf,379);
 
-options = odeset('MaxStep',0.1.*24.*3600);
+options = odeset('AbsTol',1e-10,'RelTol',1e-10);
 
 [t,y] = ode45(@rates,tspan,y0,options);
 Sun_pos = y(:,1:3);
