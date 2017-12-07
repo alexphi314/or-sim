@@ -140,4 +140,5 @@ v = [];
 for k = 1:size(OR_veloc,1)
     v(k,1) = norm(VE_OR(k,:));
     v(k,2) = norm(OR_veloc(k,:));
+    v(k,3) = abs((v(k,1)-v(k,2))/v(k,1).*100);
 end

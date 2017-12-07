@@ -71,8 +71,4 @@ Jupiter_vel = y(:,22:24);
 Bennu_vel = y(:,25:27);
 OR_vel = y(:,28:30);
 
-for k = 1:size(OR_vel,1)
-    veloc(k) = norm(OR_vel(k,:));
-end
-
 end

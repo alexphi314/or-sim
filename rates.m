@@ -25,13 +25,13 @@ M = [Sun_mass,Earth_mass,Jupiter_mass,Bennu_mass,OR_mass];
 a = calc_accel(M,X);
 
 % Assigning output
-dy(1:3) = Sun_veloc;
+dy(1:3) = [0 0 0];
 dy(4:6) = Earth_veloc;
 dy(7:9) = Jupiter_veloc;
 dy(10:12) = Bennu_veloc;
 dy(13:15) = OR_veloc;
 
-dy(16:18) = a(1,:);
+dy(16:18) = [0 0 0];
 dy(19:21) = a(2,:);
 dy(22:24) = a(3,:);
 dy(25:27) = a(4,:);
