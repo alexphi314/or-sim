@@ -66,8 +66,10 @@ options = odeset('AbsTol',1e-10,'RelTol',1e-10);
 t0 = 0;
 tf = (t_steps - 111).*24.*3600;
 tspan = linspace(t0,tf,t_steps - 110);
+OR_dv = (1+.95./100.)*OR_vel(end,:);
+fprintf('Implemented DV %f km/s on Day 111.\n',0.95./100.*norm(OR_vel(end,:)));
 y0 = [Sun_pos(end,:) Earth_pos(end,:) Jupiter_pos(end,:) Bennu_pos(end,:) OR_pos(end,:) Sun_vel(end,:) ...
-    Earth_vel(end,:) Jupiter_vel(end,:) Bennu_vel(end,:) OR_vel(end,:)];
+    Earth_vel(end,:) Jupiter_vel(end,:) Bennu_vel(end,:) OR_dv];
 
 [Sun_pos2,Earth_pos2,Jupiter_pos2,Bennu_pos2,OR_pos2,t2,Sun_vel2,Earth_vel2,Jupiter_vel2,Bennu_vel2,OR_vel2] = run_de(tspan,y0,options);
 
