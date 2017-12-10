@@ -78,7 +78,7 @@ OR_vel = [];
 OR_vel(1,:) = OR_v0;
 t = [];
 t(1) = 0;
-for k = 2:7
+for k = 2:8
     t0 = ts(k-1)*24*3600;
     tf = ts(k)*24*3600;
     tspan = linspace(t0,tf,ts(k)-ts(k-1)+1);
@@ -120,13 +120,20 @@ for k = 2:7
         y0(13:15) = E_OR(754,:);
         y0(10:12) = E_Bennu(754,:);
         y0(25:27) = VE_Bennu(754,:);
-        %fprintf('Implemented DV %.3f km/s on Day %i.\n',1.34/100*norm(OR_vel(end,:)),ts(k));
+        fprintf('Implemented DV %.3f km/s on Day %i.\n',1.34/100*norm(OR_vel(end,:)),ts(k));
     end
     
     if ts(k) == 768
         %OR_dv = (1+0.739/100).*OR_vel(end,:)
         y0(28:30) = VE_OR(768,:);
         fprintf('Implemented DV %.3f km/s on Day %i.\n',0.739/100*norm(OR_vel(end,:)),ts(k));
+    end
+    
+    if ts(k) == 839
+        y0(28:30) = VE_OR(ts(k),:);
+        y0(13:15) = E_OR(ts(k),:);
+        y0(10:12) = E_Bennu(ts(k),:);
+        y0(25:27) = VE_Bennu(ts(k),:);
     end
 end
 end

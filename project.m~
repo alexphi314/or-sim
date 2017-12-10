@@ -79,9 +79,10 @@ theta_launch = acos(dot(earth_r,bennu_r)/norm(earth_r)/norm(bennu_r));
 ts = [0; %Sep 9 2016 // Launch
     111; %Dec 29 2016 // Course Adjustment
     378; %Sep 22 2017 // Earth Fly-by
+    540; %Nothing // Remnant
     754; % Course Adjustment
     768; %Course Adjustment
-    810; %Aug 17 2018 // Bennu Arrival %Originally 707
+    839; %Aug 17 2018 // Bennu Arrival %Originally 707
     1636; %Mar 3 2021 // Bennu Departure
     2571; %Sep 24 2023 // Earth Fly-by
     ];
@@ -125,11 +126,15 @@ h4 = plot3(OR_pos(1:ts(3),1),OR_pos(1:ts(3),2),OR_pos(1:ts(3),3),'g','DisplayNam
 h5 = plot3(E_OR(1:ts(3),1),E_OR(1:ts(3),2),E_OR(1:ts(3),3),'--k','DisplayName','JPL Osiris Rex');
 legend('Location','Northwest');
 
-figure; hold on;
-plot3(OR_pos(ts(3):end,1),OR_pos(ts(3):end,2),OR_pos(ts(3):end,3),'g','DisplayName','Osiris Rex');
-plot3(E_OR(ts(3):ts(4),1),E_OR(ts(3):ts(4),2),E_OR(ts(3):ts(4),3),'--k','DisplayName','JPL Osiris Rex');
+figure; hold on; axis equal;
+plot3(OR_pos(ts(3):ts(7),1),OR_pos(ts(3):ts(7),2),OR_pos(ts(3):ts(7),3),'g','DisplayName','Osiris Rex');
+plot3(OR_pos(end,1),OR_pos(end,2),OR_pos(end,3),'go');
+plot3(E_OR(ts(3):ts(7),1),E_OR(ts(3):ts(7),2),E_OR(ts(3):ts(7),3),'--k','DisplayName','JPL Osiris Rex');
+plot3(E_OR(ts(7),1),E_OR(ts(7),2),E_OR(ts(7),3),'ko');
 plot3(Bennu_pos(ts(3):end,1),Bennu_pos(ts(3):end,2),Bennu_pos(ts(3):end,3),'r','DisplayName','Bennu');
-plot3(E_Bennu(ts(3):ts(4),1),E_Bennu(ts(3):ts(4),2),E_Bennu(ts(3):ts(4),3),'--r','DisplayName','JPL Bennu');
+plot3(Bennu_pos(end,1),Bennu_pos(end,2),Bennu_pos(end,3),'ro');
+plot3(E_Bennu(ts(3):ts(7),1),E_Bennu(ts(3):ts(7),2),E_Bennu(ts(3):ts(7),3),':k','DisplayName','JPL Bennu');
+plot3(E_Bennu(ts(7),1),E_Bennu(ts(7),2),E_Bennu(ts(7),3),'k+');
 
 % figure; hold on; axis equal;
 % plot(E_OR(:,1),E_OR(:,2),'g');
@@ -143,7 +148,6 @@ for k = 1:size(OR_pos,1)
     r(k,2) = norm(E_OR(k,:));
     r(k,3) = abs((r(k,1)-r(k,2))/r(k,2).*100);
 end
-test = r < 1e4;
 v = [];
 for k = 1:size(OR_veloc,1)
     v(k,1) = norm(VE_OR(k,:));
@@ -160,22 +164,29 @@ for k = 1:size(OR_veloc,1)
 end
 
 %Grabbing vectors
-before_burn = VE_OR(379,:);
-after_burn = VE_OR(380,:);
+before_burn = VE_OR(753,:);
+after_burn = VE_OR(754,:);
 bb_u = before_burn./norm(before_burn);
 ab_u = after_burn./norm(after_burn);
 
 test = t./24./3600;
 
-r_arrival = OR_pos(:,:) - Bennu_pos(:,:);
-for k = 1:size(r_arrival,1)
-    r_arrival(k,4) = norm(r_arrival(k,1:3));
-    r_arrival(k,5) = norm(E_OR(k,:) - E_Bennu(k,:));
+r_arrival = [];
+for k = 1:size(OR_pos,1)
+    r_b = OR_pos(k,:) - Bennu_pos(k,:);
+    r_arrival(k,1) = norm(r_b);
+    r_arrival(k,2) = norm(E_OR(k,:) - E_Bennu(k,:));
 end
-[min_dist tca] = min(r_arrival(:,4));
-[min_dist_jpl tca2] = min(r_arrival(:,5));
+[min_dist tca] = min(r_arrival(:,1));
+[min_dist_jpl tca2] = min(r_arrival(:,2));
 fprintf('On Day %i Osiris Rex is %.3f km from Bennu.\n',ts(4),norm(r_arrival));
 
 bennu_error = [];
 for k = 1:size(Bennu_pos,1)
-    bennu_error = 
+    bennu_error(k,1) = norm(Bennu_pos(k,:));
+    bennu_error(k,2) = norm(E_Bennu(k,:));
+    bennu_error(k,3) = abs(bennu_error(k,2)-bennu_error(k,1))/bennu_error(k,2)*100;
+end
+
+movement_u = OR_pos(540,:) - Bennu_pos(540,:);
+movement_u = movement_u./norm(movement_u);

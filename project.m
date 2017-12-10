@@ -79,7 +79,7 @@ theta_launch = acos(dot(earth_r,bennu_r)/norm(earth_r)/norm(bennu_r));
 ts = [0; %Sep 9 2016 // Launch
     111; %Dec 29 2016 // Course Adjustment
     378; %Sep 22 2017 // Earth Fly-by
-    540; %Simulation Adjustment
+    540; %Nothing // Remnant
     754; % Course Adjustment
     768; %Course Adjustment
     839; %Aug 17 2018 // Bennu Arrival %Originally 707
@@ -127,14 +127,24 @@ h5 = plot3(E_OR(1:ts(3),1),E_OR(1:ts(3),2),E_OR(1:ts(3),3),'--k','DisplayName','
 legend('Location','Northwest');
 
 figure; hold on; axis equal;
-plot3(OR_pos(ts(3):end,1),OR_pos(ts(3):end,2),OR_pos(ts(3):end,3),'g','DisplayName','Osiris Rex');
-plot3(OR_pos(end,1),OR_pos(end,2),OR_pos(end,3),'go');
+plot3(OR_pos(ts(3):ts(7),1),OR_pos(ts(3):ts(7),2),OR_pos(ts(3):ts(7),3),'g','DisplayName','Osiris Rex');
+plot3(OR_pos(ts(7),1),OR_pos(ts(7),2),OR_pos(ts(7),3),'go');
 plot3(E_OR(ts(3):ts(7),1),E_OR(ts(3):ts(7),2),E_OR(ts(3):ts(7),3),'--k','DisplayName','JPL Osiris Rex');
 plot3(E_OR(ts(7),1),E_OR(ts(7),2),E_OR(ts(7),3),'ko');
-plot3(Bennu_pos(ts(3):end,1),Bennu_pos(ts(3):end,2),Bennu_pos(ts(3):end,3),'r','DisplayName','Bennu');
-plot3(Bennu_pos(end,1),Bennu_pos(end,2),Bennu_pos(end,3),'ro');
-plot3(E_Bennu(ts(3):ts(7),1),E_Bennu(ts(3):ts(7),2),E_Bennu(ts(3):ts(7),3),':k','DisplayName','JPL Bennu');
-plot3(E_Bennu(ts(7),1),E_Bennu(ts(7),2),E_Bennu(ts(7),3),'k+');
+plot3(Bennu_pos(ts(3):ts(7),1),Bennu_pos(ts(3):ts(7),2),Bennu_pos(ts(3):ts(7),3),'r','DisplayName','Bennu');
+plot3(Bennu_pos(ts(7),1),Bennu_pos(ts(7),2),Bennu_pos(ts(7),3),'ro');
+%plot3(E_Bennu(ts(3):ts(7),1),E_Bennu(ts(3):ts(7),2),E_Bennu(ts(3):ts(7),3),':k','DisplayName','JPL Bennu');
+%plot3(E_Bennu(ts(7),1),E_Bennu(ts(7),2),E_Bennu(ts(7),3),'k+');
+
+figure; hold on; axis equal;
+r_OR_pos = OR_pos(ts(7)+2:ts(8),:) - Bennu_pos(ts(7)+2:ts(8),:);
+r_OR_E = E_OR(ts(7):ts(8),:) - E_Bennu(ts(7):ts(8),:);
+h1 = plot3(r_OR_pos(:,1),r_OR_pos(:,2),r_OR_pos(:,3),'g','DisplayName','Osiris Rex');
+h3 = plot3(r_OR_pos(end,1),r_OR_pos(end,2),r_OR_pos(end,3),'go','DisplayName','Ending Position');
+plot3(r_OR_pos(1,1),r_OR_pos(1,2),r_OR_pos(1,3),'g*');
+h2 = plot3(r_OR_E(:,1),r_OR_E(:,2),r_OR_E(:,3),'--k','DisplayName','JPL Osiris Rex');
+plot3(r_OR_E(end,1),r_OR_E(end,2),r_OR_E(end,3),'ko');
+legend([h1 h2 h3],'Location','Northwest');
 
 % figure; hold on; axis equal;
 % plot(E_OR(:,1),E_OR(:,2),'g');
@@ -179,7 +189,7 @@ for k = 1:size(OR_pos,1)
 end
 [min_dist tca] = min(r_arrival(:,1));
 [min_dist_jpl tca2] = min(r_arrival(:,2));
-fprintf('On Day %i Osiris Rex is %.3f km from Bennu.\n',ts(4),norm(r_arrival));
+%fprintf('On Day %i Osiris Rex is %.3f km from Bennu.\n',ts(4),norm(r_arrival));
 
 bennu_error = [];
 for k = 1:size(Bennu_pos,1)
