@@ -82,7 +82,7 @@ ts = [0; %Sep 9 2016 // Launch
     540; %Simulation Adjustment
     754; % Course Adjustment
     768; %Course Adjustment
-    800; %Aug 17 2018 // Bennu Arrival %Originally 707
+    839; %Aug 17 2018 // Bennu Arrival %Originally 707
     1636; %Mar 3 2021 // Bennu Departure
     2571; %Sep 24 2023 // Earth Fly-by
     ];
@@ -128,16 +128,13 @@ legend('Location','Northwest');
 
 figure; hold on; axis equal;
 plot3(OR_pos(ts(3):end,1),OR_pos(ts(3):end,2),OR_pos(ts(3):end,3),'g','DisplayName','Osiris Rex');
-plot3(E_OR(ts(3):ts(7),1),E_OR(ts(3):ts(7),2),E_OR(ts(3):ts(7),3),'--k','DisplayName','JPL Osiris Rex');
-plot3(OR_pos(602,1),OR_pos(602,2),OR_pos(602,3),'*g');
-plot3(E_OR(602,1),E_OR(602,2),E_OR(602,3),'*k');
-plot3(OR_pos(754,1),OR_pos(754,2),OR_pos(754,3),'*g');
 plot3(OR_pos(end,1),OR_pos(end,2),OR_pos(end,3),'go');
-plot3(E_OR(800,1),E_OR(800,2),E_OR(800,3),'ko');
-%plot3(Bennu_pos(ts(3):end,1),Bennu_pos(ts(3):end,2),Bennu_pos(ts(3):end,3),'r','DisplayName','Bennu');
+plot3(E_OR(ts(3):ts(7),1),E_OR(ts(3):ts(7),2),E_OR(ts(3):ts(7),3),'--k','DisplayName','JPL Osiris Rex');
+plot3(E_OR(ts(7),1),E_OR(ts(7),2),E_OR(ts(7),3),'ko');
+plot3(Bennu_pos(ts(3):end,1),Bennu_pos(ts(3):end,2),Bennu_pos(ts(3):end,3),'r','DisplayName','Bennu');
 plot3(Bennu_pos(end,1),Bennu_pos(end,2),Bennu_pos(end,3),'ro');
-plot3(E_Bennu(800,1),E_Bennu(800,2),E_Bennu(800,3),'k*');
-%plot3(E_Bennu(ts(3):ts(7),1),E_Bennu(ts(3):ts(7),2),E_Bennu(ts(3):ts(7),3),'--r','DisplayName','JPL Bennu');
+plot3(E_Bennu(ts(3):ts(7),1),E_Bennu(ts(3):ts(7),2),E_Bennu(ts(3):ts(7),3),':k','DisplayName','JPL Bennu');
+plot3(E_Bennu(ts(7),1),E_Bennu(ts(7),2),E_Bennu(ts(7),3),'k+');
 
 % figure; hold on; axis equal;
 % plot(E_OR(:,1),E_OR(:,2),'g');
@@ -176,7 +173,7 @@ test = t./24./3600;
 
 r_arrival = [];
 for k = 1:size(OR_pos,1)
-    r_b = OR_pos(k,:) - E_Bennu(k,:);
+    r_b = OR_pos(k,:) - Bennu_pos(k,:);
     r_arrival(k,1) = norm(r_b);
     r_arrival(k,2) = norm(E_OR(k,:) - E_Bennu(k,:));
 end

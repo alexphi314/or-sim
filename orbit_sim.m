@@ -124,9 +124,8 @@ for k = 2:7
     end
     
     if ts(k) == 768
-        OR_dv = (1+0.739/100).*OR_vel(end,:)
-        y0(28:30) = OR_dv;
-        VE_OR(768,:)
+        %OR_dv = (1+0.739/100).*OR_vel(end,:)
+        y0(28:30) = VE_OR(768,:);
         fprintf('Implemented DV %.3f km/s on Day %i.\n',0.739/100*norm(OR_vel(end,:)),ts(k));
     end
 end
