@@ -1,4 +1,4 @@
-function [Sun_pos,Earth_pos,Jupiter_pos,Bennu_pos,OR_pos,t,OR_vel] = orbit_sim(Bennu,Earth,Launch,Survey,Approach,phasing_duration,u_s,u_e,u_b)
+function [Sun_pos,Earth_pos,Jupiter_pos,Bennu_pos,OR_pos,t,OR_vel] = orbit_sim(Bennu,Earth,Launch,Survey,Approach,phasing_duration,u_s,u_e,u_b,ts)
 %Alex Philpott
 
 %% Phasing dv Calculation
@@ -37,35 +37,35 @@ fprintf('Depart launch orbit with delta-v %.3f km/s. Burn at perigee.\n',dv1);
 
 %% Orbit Simulation
 %Positions at Sept 9 2016 07:00:00 UTC
-Sun_x0 = [0,0,0]; %km
-Sun_v0 = [0,0,0]; %km/s
+load('parsed_files.mat');
+Sun_x0 = E_Sun(1,:); %km
+Sun_v0 = VE_Sun(1,:); %km/s
 
-Earth_x0 = [1.466843720331026E+08,-3.439793826684207E+07,1.247116933315992E+02]; %km
-Earth_v0 = [6.305038908530346E+00,2.889370027395673E+01,-1.033362360905343E-03]; %km/s
+Earth_x0 = E_Earth(1,:); %km
+Earth_v0 = VE_Earth(1,:); %km/s
 
-Jupiter_x0 = [-8.145848080303124E+08,-2.999808641327609E+07,1.835193605475973E+07]; %km
-Jupiter_v0 = [3.237695547496940E-01,-1.245048235596520E+01,4.446458068459513E-02]; %km/s
+Jupiter_x0 = E_Jupiter(1,:); %km
+Jupiter_v0 = VE_Jupiter(1,:); %km/s
 
-Bennu_x0 = [-6.282589563794809E+06,1.352903261433240E+08,1.431774883299487E+07]; %km
-Bennu_v0 = [-3.406372379305044E+01,8.185383143778804E-01,2.141957757423102E-01]; %km/s
+Bennu_x0 = E_Bennu(1,:); %km
+Bennu_v0 = VE_Bennu(1,:); %km/s
 
-OR_x0 = [1.465185868461336E+08,-3.438120295743909E+07,-1.456473822746798E+04]; %km
-OR_v0 = [4.778887719387938E-01,2.918812388913381E+01,-1.290227195947065E-01]; %km/s
+OR_x0 = E_OR(1,:); %km
+OR_v0 = VE_OR(1,:); %km/s
 
 y0 = [Sun_x0,Earth_x0,Jupiter_x0,Bennu_x0,OR_x0,Sun_v0,Earth_v0,Jupiter_v0,Bennu_v0,OR_v0]';
 
-t_steps = 378;
-t0 = 0; %Sep 9 2016
-tf = 111*24*3600; %Sep 22 2017 %378 timesteps
-tspan = linspace(t0,tf,112);
+t0 = ts(1);
+tf = ts(2)*24*3600;
+tspan = linspace(t0,tf,ts(2)-ts(1)+1);
 
 options = odeset('AbsTol',1e-10,'RelTol',1e-10);
 
 [Sun_pos,Earth_pos,Jupiter_pos,Bennu_pos,OR_pos,t,Sun_vel,Earth_vel,Jupiter_vel,Bennu_vel,OR_vel] = run_de(tspan,y0,options);
 
-t0 = 0;
-tf = (t_steps - 111).*24.*3600;
-tspan = linspace(t0,tf,t_steps - 110);
+t0 = tf;
+tf = ts(3).*24.*3600;
+tspan = linspace(t0,tf,ts(3)-ts(2)+1);
 OR_dv = (1+.95./100.)*OR_vel(end,:);
 fprintf('Implemented DV %f km/s on Day 111.\n',0.95./100.*norm(OR_vel(end,:)));
 y0 = [Sun_pos(end,:) Earth_pos(end,:) Jupiter_pos(end,:) Bennu_pos(end,:) OR_pos(end,:) Sun_vel(end,:) ...

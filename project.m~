@@ -81,9 +81,9 @@ ts = [0; %Sep 9 2016 // Launch
     378; %Sep 22 2017 // Earth Fly-by
     707; %Aug 17 2018 // Bennu Arrival
     1636; %Mar 3 2021 // Bennu Departure
-    2571; %Sep 24 2023 // Earth Fly-by
-    ];
+    2571; %
     
+
 %% 2-Body Patched Conic Total delta-V calculation
 [tot_time, dv_tot] = patchedconic(Bennu,Earth,Launch,Survey,Approach,theta_launch,u_s,u_e,u_b);
 fprintf('Total time from launch to return: %.3f days. Total dv: %.3f km/s.\n',tot_time/24/3600,dv_tot);
@@ -91,7 +91,7 @@ fprintf('Total time from launch to return: %.3f days. Total dv: %.3f km/s.\n',to
 %% 4-Body (Jupiter, Earth, Bennu, Sun) delta-V calculation
 fprintf('\n4 Body Simulations \n');
 phasing_duration = 379.*24.*3600; %sec
-[Sun_pos,Earth_pos,Jupiter_pos,Bennu_pos,OR_pos,t,OR_veloc] = orbit_sim(Bennu,Earth,Launch,Survey,Approach,phasing_duration,u_s,u_e,u_b,ts);
+[Sun_pos,Earth_pos,Jupiter_pos,Bennu_pos,OR_pos,t,OR_veloc] = orbit_sim(Bennu,Earth,Launch,Survey,Approach,phasing_duration,u_s,u_e,u_b);
 
 %% Parsing or Loading Ephemerides
 if mode == 1 %parse
