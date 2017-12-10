@@ -55,45 +55,59 @@ OR_v0 = VE_OR(1,:); %km/s
 
 %% Simulating
 options = odeset('AbsTol',1e-10,'RelTol',1e-10);
+y0 = [Sun_x0,Earth_x0,Jupiter_x0,Bennu_x0,OR_x0,Sun_v0,Earth_v0,Jupiter_v0,Bennu_v0,OR_v0]';
 Sun_pos = [];
+Sun_pos(1,:) = Sun_x0;
 Earth_pos = [];
+Earth_pos(1,:) = Earth_x0;
 Jupiter_pos = [];
+Jupiter_pos(1,:) = Jupiter_x0;
 Bennu_pos = [];
+Bennu_pos(1,:) = Bennu_x0;
 OR_pos = [];
+OR_pos(1,:) = OR_x0;
 Sun_vel = [];
+Sun_vel(1,:) = Sun_v0;
 Earth_vel = [];
+Earth_vel(1,:) = Earth_v0;
 Jupiter_vel = [];
+Jupiter_vel(1,:) = Jupiter_v0;
 Bennu_vel = [];
+Bennu_vel(1,:) = Bennu_v0;
 OR_vel = [];
+OR_vel(1,:) = OR_v0;
 t = [];
-for k = 2:3
-    y0 = [Sun_x0,Earth_x0,Jupiter_x0,Bennu_x0,OR_x0,Sun_v0,Earth_v0,Jupiter_v0,Bennu_v0,OR_v0]';
+t(1) = 0;
+for k = 2:4
     t0 = ts(k-1)*24*3600;
     tf = ts(k)*24*3600;
     tspan = linspace(t0,tf,ts(k)-ts(k-1)+1);
 
-    [Sun_pos2,Earth_pos2,Jupiter_pos2,Bennu_pos2,OR_pos2,t2,Sun_vel2,Earth_vel2,Jupiter_vel2,Bennu_vel2,OR_vel2] = run_de(tspan,y0,options);
+    [Sun_pos2,Earth_pos2,Jupiter_pos2,Bennu_pos2,OR_pos2,t2,Sun_vel2,Earth_vel2,Jupiter_vel2,Bennu_vel2,OR_vel2]...
+        = run_de(tspan,y0,options);
     
-    Sun_pos = [Sun_pos; Sun_pos2];
-    Sun_vel = [Sun_vel; Sun_vel2];
-    Earth_pos = [Earth_pos; Earth_pos2];
-    Earth_vel = [Earth_vel; Earth_vel2];
-    Jupiter_pos = [Jupiter_pos; Jupiter_pos2];
-    Jupiter_vel = [Jupiter_vel; Jupiter_vel2];
-    Bennu_pos = [Bennu_pos; Bennu_pos2];
-    Bennu_vel = [Bennu_vel; Bennu_vel2];
-    OR_pos = [OR_pos; OR_pos2];
-    OR_vel = [OR_vel; OR_vel2];
-    t = [t; t2];
+    Sun_pos = [Sun_pos; Sun_pos2(2:end,:)];
+    Sun_vel = [Sun_vel; Sun_vel2(2:end,:)];
+    Earth_pos = [Earth_pos; Earth_pos2(2:end,:)];
+    Earth_vel = [Earth_vel; Earth_vel2(2:end,:)];
+    Jupiter_pos = [Jupiter_pos; Jupiter_pos2(2:end,:)];
+    Jupiter_vel = [Jupiter_vel; Jupiter_vel2(2:end,:)];
+    Bennu_pos = [Bennu_pos; Bennu_pos2(2:end,:)];
+    Bennu_vel = [Bennu_vel; Bennu_vel2(2:end,:)];
+    OR_pos = [OR_pos; OR_pos2(2:end,:)];
+    OR_vel = [OR_vel; OR_vel2(2:end,:)];
+    t = [t; t2(2:end,:)];
     
     y0 = [Sun_pos(end,:) Earth_pos(end,:) Jupiter_pos(end,:) Bennu_pos(end,:) OR_pos(end,:) Sun_vel(end,:) ...
     Earth_vel(end,:) Jupiter_vel(end,:) Bennu_vel(end,:) OR_vel(end,:)];
 
     if k == 2
-        OR_dv = (1+.95./100.)*OR_vel(end,:);
-        y0(end) = OR_dv;
+        OR_dv = (1+.95./100.).*OR_vel(end,:);
+        y0(28:30) = OR_dv;
         fprintf('Implemented DV %f km/s on Day %i.\n',0.95./100.*norm(OR_vel(end,:)),ts(2));
     end
+    
+    
 end
 
 %% Simulating from Earth Flyby to Bennu Arrival

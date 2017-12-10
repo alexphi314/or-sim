@@ -134,8 +134,8 @@ h5 = plot3(E_OR(1:ts(3),1),E_OR(1:ts(3),2),E_OR(1:ts(3),3),'--k','DisplayName','
 % legend([h2 h3 h4 h5],'Location','Northwest');
 
 figure; hold on;
-plot3(OR_pos(ts(3):end,1),OR_pos(ts(3):end,2),OR_pos(ts(3):end,3),'g','DisplayName','Osiris Rex');
-plot3(E_OR(ts(3):ts(4),1),E_OR(ts(3):ts(4),2),E_OR(ts(3):ts(4),3),'--k','DisplayName','JPL Osiris Rex');
+plot3(OR_pos(ts(2):end,1),OR_pos(ts(2):end,2),OR_pos(ts(2):end,3),'g','DisplayName','Osiris Rex');
+plot3(E_OR(ts(2):ts(4),1),E_OR(ts(2):ts(4),2),E_OR(ts(2):ts(4),3),'--k','DisplayName','JPL Osiris Rex');
 
 % figure; hold on; axis equal;
 % plot(E_OR(:,1),E_OR(:,2),'g');
@@ -170,3 +170,5 @@ before_burn = VE_OR(379,:);
 after_burn = VE_OR(380,:);
 bb_u = before_burn./norm(before_burn);
 ab_u = after_burn./norm(after_burn);
+
+test = t./24./3600;
