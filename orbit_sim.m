@@ -4,7 +4,7 @@ function [Sun_pos,Earth_pos,Jupiter_pos,Bennu_pos,OR_pos,t,OR_vel] = orbit_sim(B
 %% Phasing dv Calculation
 T2 = phasing_duration;
 a2 = (T2.*sqrt(u_s)/2/pi)^(2/3);
-v = sqrt(u_s.*(2./Earth.a - 1/a2))
+v = sqrt(u_s.*(2./Earth.a - 1/a2));
 dv = sqrt(u_s*(2/Earth.a - 1/a2)) - sqrt(u_s/Earth.a);
 dv_phase = dv;
 
@@ -53,61 +53,70 @@ Bennu_v0 = VE_Bennu(1,:); %km/s
 OR_x0 = E_OR(1,:); %km
 OR_v0 = VE_OR(1,:); %km/s
 
-%% Simulating from Launch to Burn
-y0 = [Sun_x0,Earth_x0,Jupiter_x0,Bennu_x0,OR_x0,Sun_v0,Earth_v0,Jupiter_v0,Bennu_v0,OR_v0]';
-
-t0 = ts(1);
-tf = ts(2)*24*3600;
-tspan = linspace(t0,tf,ts(2)-ts(1)+1);
-
+%% Simulating
 options = odeset('AbsTol',1e-10,'RelTol',1e-10);
+Sun_pos = [];
+Earth_pos = [];
+Jupiter_pos = [];
+Bennu_pos = [];
+OR_pos = [];
+Sun_vel = [];
+Earth_vel = [];
+Jupiter_vel = [];
+Bennu_vel = [];
+OR_vel = [];
+t = [];
+for k = 2:3
+    y0 = [Sun_x0,Earth_x0,Jupiter_x0,Bennu_x0,OR_x0,Sun_v0,Earth_v0,Jupiter_v0,Bennu_v0,OR_v0]';
+    t0 = ts(k-1)*24*3600;
+    tf = ts(k)*24*3600;
+    tspan = linspace(t0,tf,ts(k)-ts(k-1)+1);
 
-[Sun_pos,Earth_pos,Jupiter_pos,Bennu_pos,OR_pos,t,Sun_vel,Earth_vel,Jupiter_vel,Bennu_vel,OR_vel] = run_de(tspan,y0,options);
+    [Sun_pos2,Earth_pos2,Jupiter_pos2,Bennu_pos2,OR_pos2,t2,Sun_vel2,Earth_vel2,Jupiter_vel2,Bennu_vel2,OR_vel2] = run_de(tspan,y0,options);
+    
+    Sun_pos = [Sun_pos; Sun_pos2];
+    Sun_vel = [Sun_vel; Sun_vel2];
+    Earth_pos = [Earth_pos; Earth_pos2];
+    Earth_vel = [Earth_vel; Earth_vel2];
+    Jupiter_pos = [Jupiter_pos; Jupiter_pos2];
+    Jupiter_vel = [Jupiter_vel; Jupiter_vel2];
+    Bennu_pos = [Bennu_pos; Bennu_pos2];
+    Bennu_vel = [Bennu_vel; Bennu_vel2];
+    OR_pos = [OR_pos; OR_pos2];
+    OR_vel = [OR_vel; OR_vel2];
+    t = [t; t2];
+    
+    y0 = [Sun_pos(end,:) Earth_pos(end,:) Jupiter_pos(end,:) Bennu_pos(end,:) OR_pos(end,:) Sun_vel(end,:) ...
+    Earth_vel(end,:) Jupiter_vel(end,:) Bennu_vel(end,:) OR_vel(end,:)];
 
-%% Simulating from Burn to Earth Flyby
-t0 = tf;
-tf = ts(3).*24.*3600;
-tspan = linspace(t0,tf,ts(3)-ts(2)+1);
-OR_dv = (1+.95./100.)*OR_vel(end,:);
-fprintf('Implemented DV %f km/s on Day %i.\n',0.95./100.*norm(OR_vel(end,:)),ts(2));
-y0 = [Sun_pos(end,:) Earth_pos(end,:) Jupiter_pos(end,:) Bennu_pos(end,:) OR_pos(end,:) Sun_vel(end,:) ...
-    Earth_vel(end,:) Jupiter_vel(end,:) Bennu_vel(end,:) OR_dv];
-
-[Sun_pos2,Earth_pos2,Jupiter_pos2,Bennu_pos2,OR_pos2,t2,Sun_vel2,Earth_vel2,Jupiter_vel2,Bennu_vel2,OR_vel2] = run_de(tspan,y0,options);
-
-Sun_pos = [Sun_pos; Sun_pos2];
-Sun_vel = [Sun_vel; Sun_vel2];
-Earth_pos = [Earth_pos; Earth_pos2];
-Earth_vel = [Earth_vel; Earth_vel2];
-Jupiter_pos = [Jupiter_pos; Jupiter_pos2];
-Jupiter_vel = [Jupiter_vel; Jupiter_vel2];
-Bennu_pos = [Bennu_pos; Bennu_pos2];
-Bennu_vel = [Bennu_vel; Bennu_vel2];
-OR_pos = [OR_pos; OR_pos2];
-OR_vel = [OR_vel; OR_vel2];
-t = [t; t2];
+    if k == 2
+        OR_dv = (1+.95./100.)*OR_vel(end,:);
+        y0(end) = OR_dv;
+        fprintf('Implemented DV %f km/s on Day %i.\n',0.95./100.*norm(OR_vel(end,:)),ts(2));
+    end
+end
 
 %% Simulating from Earth Flyby to Bennu Arrival
-t0 = tf;
-tf = ts(4).*24.*3600;
-tspan = linspace(t0,tf,ts(4)-ts(3)+1);
-y0 = [Sun_pos(end,:) Earth_pos(end,:) Jupiter_pos(end,:) Bennu_pos(end,:) E_OR(ts(3),:) Sun_vel(end,:) ...
-    Earth_vel(end,:) Jupiter_vel(end,:) Bennu_vel(end,:) VE_OR(ts(3),:)];
-
-[Sun_pos2,Earth_pos2,Jupiter_pos2,Bennu_pos2,OR_pos2,t2,Sun_vel2,Earth_vel2,Jupiter_vel2,Bennu_vel2,OR_vel2] = ...
-    run_de(tspan,y0,options);
-
-Sun_pos = [Sun_pos; Sun_pos2];
-Sun_vel = [Sun_vel; Sun_vel2];
-Earth_pos = [Earth_pos; Earth_pos2];
-Earth_vel = [Earth_vel; Earth_vel2];
-Jupiter_pos = [Jupiter_pos; Jupiter_pos2];
-Jupiter_vel = [Jupiter_vel; Jupiter_vel2];
-Bennu_pos = [Bennu_pos; Bennu_pos2];
-Bennu_vel = [Bennu_vel; Bennu_vel2];
-OR_pos = [OR_pos; OR_pos2];
-OR_vel = [OR_vel; OR_vel2];
-t = [t; t2];
+% t0 = tf;
+% tf = ts(4).*24.*3600;
+% tspan = linspace(t0,tf,ts(4)-ts(3)+1);
+% y0 = [Sun_pos(end,:) Earth_pos(end,:) Jupiter_pos(end,:) Bennu_pos(end,:) E_OR(ts(3),:) Sun_vel(end,:) ...
+%     Earth_vel(end,:) Jupiter_vel(end,:) Bennu_vel(end,:) VE_OR(ts(3),:)];
+% 
+% [Sun_pos2,Earth_pos2,Jupiter_pos2,Bennu_pos2,OR_pos2,t2,Sun_vel2,Earth_vel2,Jupiter_vel2,Bennu_vel2,OR_vel2] = ...
+%     run_de(tspan,y0,options);
+% 
+% Sun_pos = [Sun_pos; Sun_pos2];
+% Sun_vel = [Sun_vel; Sun_vel2];
+% Earth_pos = [Earth_pos; Earth_pos2];
+% Earth_vel = [Earth_vel; Earth_vel2];
+% Jupiter_pos = [Jupiter_pos; Jupiter_pos2];
+% Jupiter_vel = [Jupiter_vel; Jupiter_vel2];
+% Bennu_pos = [Bennu_pos; Bennu_pos2];
+% Bennu_vel = [Bennu_vel; Bennu_vel2];
+% OR_pos = [OR_pos; OR_pos2];
+% OR_vel = [OR_vel; OR_vel2];
+% t = [t; t2];
 
 end
 
