@@ -2,7 +2,7 @@ function dy = rates(~,y)
 %Pre-allocating dy
 dy = zeros(30,1);
 Sun_mass = 1.989e30; %kg
-Bennu_mass = 6e10;
+Bennu_mass = 7e10;
 Earth_mass = 5.97219e24; %kg
 Jupiter_mass = 1.8981e27; %kg
 OR_mass = 2110; %kg
