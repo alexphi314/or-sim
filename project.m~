@@ -79,6 +79,8 @@ theta_launch = acos(dot(earth_r,bennu_r)/norm(earth_r)/norm(bennu_r));
 ts = [0; %Sep 9 2016 // Launch
     111; %Dec 29 2016 // Course Adjustment
     378; %Sep 22 2017 // Earth Fly-by
+    754; % Course Adjustment
+    768; %Course Adjustment
     810; %Aug 17 2018 // Bennu Arrival %Originally 707
     1636; %Mar 3 2021 // Bennu Departure
     2571; %Sep 24 2023 // Earth Fly-by
@@ -150,13 +152,12 @@ for k = 1:size(OR_veloc,1)
     if k > 1
         v(k,4) = abs(v(k,1)-v(k-1,1))/v(k-1,1).*100;
         if v(k,4) > 0.4
-            fprintf('delta-V %% of 
+            fprintf('delta-V %% of %.3f found on Day %i\n',v(k,4),k);
+        end
     else
         v(k,4) = 0;
     end
 end
-
-fprintf('delta-V %% of %.3f found on Day %i.\n',burn_amnt,day);
 
 %Grabbing vectors
 before_burn = VE_OR(379,:);
@@ -174,3 +175,7 @@ end
 [min_dist tca] = min(r_arrival(:,4));
 [min_dist_jpl tca2] = min(r_arrival(:,5));
 fprintf('On Day %i Osiris Rex is %.3f km from Bennu.\n',ts(4),norm(r_arrival));
+
+bennu_error = [];
+for k = 1:size(Bennu_pos,1)
+    bennu_error = 

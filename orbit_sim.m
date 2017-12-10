@@ -78,7 +78,7 @@ OR_vel = [];
 OR_vel(1,:) = OR_v0;
 t = [];
 t(1) = 0;
-for k = 2:6
+for k = 2:7
     t0 = ts(k-1)*24*3600;
     tf = ts(k)*24*3600;
     tspan = linspace(t0,tf,ts(k)-ts(k-1)+1);
@@ -101,29 +101,33 @@ for k = 2:6
     y0 = [Sun_pos(end,:) Earth_pos(end,:) Jupiter_pos(end,:) Bennu_pos(end,:) OR_pos(end,:) Sun_vel(end,:) ...
     Earth_vel(end,:) Jupiter_vel(end,:) Bennu_vel(end,:) OR_vel(end,:)];
 
-    if k == 2
+    if ts(k) == 111
         OR_dv = (1+.95./100.).*OR_vel(end,:);
         y0(28:30) = OR_dv;
-        fprintf('Implemented DV %f km/s on Day %i.\n',0.95./100.*norm(OR_vel(end,:)),ts(2));
+        fprintf('Implemented DV %f km/s on Day %i.\n',0.95./100.*norm(OR_vel(end,:)),ts(k));
     end
     
-    if k == 3
+    if ts(k) == 378
         y0(13:15) = E_OR(ts(3),:); %Moving OR position
         y0(28:30) = VE_OR(ts(3),:); %Moving OR velocity
         y0(4:6) = E_Earth(ts(3),:); %Moving Earth position
         y0(19:21) = VE_Earth(ts(3),:); %Moving Earth velocity
     end
     
-    if k == 4
-        OR_dv = (1+1.394/100).*OR_vel(end,:);
-        y0(28:30) = OR_dv;
-        fprintf('Implemented DV %.3f km/s on Day %i.\n',1.34/100*norm(OR_vel(end,:)),ts(4));
+    if ts(k) == 754
+        %OR_dv = (1+1.394/100).*OR_vel(end,:);
+        y0(28:30) = VE_OR(754,:);
+        y0(13:15) = E_OR(754,:);
+        y0(10:12) = E_Bennu(754,:);
+        y0(25:27) = VE_Bennu(754,:);
+        %fprintf('Implemented DV %.3f km/s on Day %i.\n',1.34/100*norm(OR_vel(end,:)),ts(k));
     end
     
-    if k == 5
-        OR_dv = (1+0.739/100).*OR_vel(end,:);
+    if ts(k) == 768
+        OR_dv = (1+0.739/100).*OR_vel(end,:)
         y0(28:30) = OR_dv;
-        fprintf('Implemented DV %.3f km/s on Day %i.\n',0.739/100*norm(OR_vel(end,:)),ts(5));
+        VE_OR(768,:)
+        fprintf('Implemented DV %.3f km/s on Day %i.\n',0.739/100*norm(OR_vel(end,:)),ts(k));
     end
 end
 end
