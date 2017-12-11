@@ -2,7 +2,7 @@
 {\fonttbl\f0\fmodern\fcharset0 Courier;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
 {\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
-\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\margl1440\margr1440\vieww18900\viewh8400\viewkind0
 \deftab720
 \pard\pardeftab720\partightenfactor0
 
@@ -10316,7 +10316,12 @@ $$SOE\
 2460210.791666667 = A.D. 2023-Sep-23 07:00:00.0000 TDB \
  X = 0.000000000000000E+00 Y = 0.000000000000000E+00 Z = 0.000000000000000E+00\
  VX= 0.000000000000000E+00 VY= 0.000000000000000E+00 VZ= 0.000000000000000E+00\
- LT= 0.000000000000000E+00 RG= 0.000000000000000E+00 RR=-NaN                  \
+ LT= 0.000000000000000E+00 RG= 0.000000000000000E+00 RR=-NaN   \
+\pard\pardeftab720\partightenfactor0
+\cf0 2460211.791666667 = A.D. 2023-Sep-24 07:00:00.0000 TDB \
+ X = 0.000000000000000E+00 Y = 0.000000000000000E+00 Z = 0.000000000000000E+00\
+ VX= 0.000000000000000E+00 VY= 0.000000000000000E+00 VZ= 0.000000000000000E+00\
+ LT= 0.000000000000000E+00 RG= 0.000000000000000E+00 RR=-NaN                                 \
 $$EOE\
 *******************************************************************************\
 Coordinate system description:\

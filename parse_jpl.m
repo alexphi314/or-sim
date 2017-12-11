@@ -22,6 +22,7 @@ while strcmp(foo{1}{1},'$$SOE\') ~= 1
 end
 r = [];
 v = [];
+a = 1;
 %Continues through file until end of ephemeris data
 line = textscan(fileID,'%s',4,'delimiter','\n');
 while strcmp(line{1}{1},'$$EOE\') ~= 1
@@ -55,8 +56,6 @@ while strcmp(line{1}{1},'$$EOE\') ~= 1
     
     r_line = strsplit(line{1}{2});
     v_line = strsplit(line{1}{3});
-    %display(r_line);
-    %display(v_line);
     
     rl = strlength(r_line{1,9});
     vl = strlength(v_line{1,6});
@@ -64,9 +63,13 @@ while strcmp(line{1}{1},'$$EOE\') ~= 1
     r = [r; str2double(r_line{1,3}), str2double(r_line{1,6}), str2double(extractBefore(r_line{1,9},rl))]; %km
     v = [v; str2double(v_line{1,2}), str2double(v_line{1,4}), str2double(extractBefore(v_line{1,6},vl))]; %km/s
     
+    if a == 2571
+        foo = textscan(fileID,'%s',1,'delimiter','\n');
+    end
+    
     line = textscan(fileID,'%s',4,'delimiter','\n');
     
-    k = k + 1;
+    a = a + 1;
 end
 fprintf('%s JPL ephem file parse finished.\n',file);
 end

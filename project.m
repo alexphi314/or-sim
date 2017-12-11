@@ -8,7 +8,7 @@ mode = 2;
 G = 6.67e-11./1000^3; %km3/kg/s2
 u_e = G.*5.974e24; %km3/s2
 u_s = G.*1.989e30; %km3/s2
-u_b = G.*6e10; %km3/s2
+u_b = G.*0.00014e15; %km3/s2
 RE = 6371.008; %km
 
 Sun_mass = 1.989e30; %kg
@@ -83,7 +83,7 @@ ts = [0; %Sep 9 2016 // Launch
     754; % Course Adjustment
     768; %Course Adjustment
     839; %Aug 17 2018 // Bennu Arrival %Originally 707
-    1636; %Mar 3 2021 // Bennu Departure
+    1638; %Mar 3 2021 // Bennu Departure
     2571; %Sep 24 2023 // Earth Fly-by
     ];
     
@@ -138,13 +138,23 @@ plot3(Bennu_pos(ts(7),1),Bennu_pos(ts(7),2),Bennu_pos(ts(7),3),'ro');
 
 figure; hold on; axis equal;
 r_OR_pos = OR_pos(ts(7)+2:ts(8),:) - Bennu_pos(ts(7)+2:ts(8),:);
-r_OR_E = E_OR(ts(7):ts(8),:) - E_Bennu(ts(7):ts(8),:);
+r_OR_E = E_OR(ts(7):ts(8)-1,:) - E_Bennu(ts(7):ts(8)-1,:);
 h1 = plot3(r_OR_pos(:,1),r_OR_pos(:,2),r_OR_pos(:,3),'g','DisplayName','Osiris Rex');
 h3 = plot3(r_OR_pos(end,1),r_OR_pos(end,2),r_OR_pos(end,3),'go','DisplayName','Ending Position');
-plot3(r_OR_pos(1,1),r_OR_pos(1,2),r_OR_pos(1,3),'g*');
+%plot3(r_OR_pos(1,1),r_OR_pos(1,2),r_OR_pos(1,3),'g*');
 h2 = plot3(r_OR_E(:,1),r_OR_E(:,2),r_OR_E(:,3),'--k','DisplayName','JPL Osiris Rex');
 plot3(r_OR_E(end,1),r_OR_E(end,2),r_OR_E(end,3),'ko');
 legend([h1 h2 h3],'Location','Northwest');
+plot3(0,0,0,'k*');
+
+figure; hold on; axis equal;
+h1 = plot3(OR_pos(ts(8):end,1),OR_pos(ts(8):end,2),OR_pos(ts(8):end,3),'g','DisplayName','Osiris Rex');
+h2 = plot3(OR_pos(end,1),OR_pos(end,2),OR_pos(end,3),'go','DisplayName','Ending Position');
+h3 = plot3(E_OR(ts(8):end,1),E_OR(ts(8):end,2),E_OR(ts(8):end,3),'--k','DisplayName','JPL Osiris Rex');
+%plot3(E_OR(end,1),E_OR(end,2),E_OR(end,3),'*k');
+h4 = plot3(Earth_pos(ts(8):end,1),Earth_pos(ts(8):end,2),Earth_pos(ts(8):end,3),'b','DisplayName','Earth');
+%h5 = plot3(E_Earth(ts(8):end,1),E_Earth(ts(8):end,2),E_Earth(ts(8):end,3),'--b','DisplayName','JPL Earth');
+legend('Location','Northwest');
 
 % figure; hold on; axis equal;
 % plot(E_OR(:,1),E_OR(:,2),'g');

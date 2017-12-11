@@ -78,7 +78,7 @@ OR_vel = [];
 OR_vel(1,:) = OR_v0;
 t = [];
 t(1) = 0;
-for k = 2:8
+for k = 2:9
     t0 = ts(k-1)*24*3600;
     tf = ts(k)*24*3600;
     tspan = linspace(t0,tf,ts(k)-ts(k-1)+1);
@@ -131,9 +131,15 @@ for k = 2:8
     
     if ts(k) == 839
         y0(28:30) = VE_OR(ts(k),:);
+        %y0(28:30) = sqrt(u_b./5).*VE_OR(ts(k),:)./norm(VE_OR(ts(k),:));
         y0(13:15) = E_OR(ts(k),:);
         y0(10:12) = E_Bennu(ts(k),:);
         y0(25:27) = VE_Bennu(ts(k),:);
+    end
+    
+    if ts(k) == 1638
+        y0(28:30) = VE_OR(ts(k),:);
+        y0(13:15) = E_OR(ts(k),:);
     end
 end
 end
