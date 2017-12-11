@@ -8,7 +8,7 @@ mode = 2;
 G = 6.67e-11./1000^3; %km3/kg/s2
 u_e = G.*5.974e24; %km3/s2
 u_s = G.*1.989e30; %km3/s2
-u_b = G.*6e10; %km3/s2
+u_b = G.*0.00014e15; %km3/s2
 RE = 6371.008; %km
 
 Sun_mass = 1.989e30; %kg
@@ -75,6 +75,18 @@ earth_r = [1.459452879414980E+08,-3.761408174440899E+07,2.573073861077428E+02]; 
 bennu_r = [-2.479434376975826E+06,1.351546412664345E+08,1.428915405096796E+07]; %km
 theta_launch = acos(dot(earth_r,bennu_r)/norm(earth_r)/norm(bennu_r));
 
+%Defining timeline of misson;
+ts = [0; %Sep 9 2016 // Launch
+    111; %Dec 29 2016 // Course Adjustment
+    378; %Sep 22 2017 // Earth Fly-by
+    540; %Nothing // Remnant
+    754; % Course Adjustment
+    768; %Course Adjustment
+    839; %Aug 17 2018 // Bennu Arrival %Originally 707
+    1638; %Mar 3 2021 // Bennu Departure
+    2571; %Sep 24 2023 // Earth Fly-by
+    ];
+    
 %% 2-Body Patched Conic Total delta-V calculation
 [tot_time, dv_tot] = patchedconic(Bennu,Earth,Launch,Survey,Approach,theta_launch,u_s,u_e,u_b);
 fprintf('Total time from launch to return: %.3f days. Total dv: %.3f km/s.\n',tot_time/24/3600,dv_tot);
@@ -82,7 +94,7 @@ fprintf('Total time from launch to return: %.3f days. Total dv: %.3f km/s.\n',to
 %% 4-Body (Jupiter, Earth, Bennu, Sun) delta-V calculation
 fprintf('\n4 Body Simulations \n');
 phasing_duration = 379.*24.*3600; %sec
-[Sun_pos,Earth_pos,Jupiter_pos,Bennu_pos,OR_pos,t,OR_veloc] = orbit_sim(Bennu,Earth,Launch,Survey,Approach,phasing_duration,u_s,u_e,u_b);
+[Sun_pos,Earth_pos,Jupiter_pos,Bennu_pos,OR_pos,t,OR_veloc] = orbit_sim(Bennu,Earth,Launch,Survey,Approach,phasing_duration,u_s,u_e,u_b,ts);
 
 %% Parsing or Loading Ephemerides
 if mode == 1 %parse
@@ -108,36 +120,89 @@ Bennu_v0 = VE_Bennu(1,:); %km/s
 OR_x0 = E_OR(1,:); %km
 OR_v0 = VE_OR(1,:); %km/s
 
-hold on; axis equal;
-%h1 = plot(Sun_pos(:,1),Sun_pos(:,2),'r','DisplayName','Sun');
-%plot(Sun_x0(1),Sun_x0(2),'r*');
-%plot(Sun_pos(end,1),Sun_pos(end,2),'ro');
-h2 = plot(Earth_pos(:,1),Earth_pos(:,2),'b','DisplayName','Earth');
-h3 = plot(E_Earth(1:379,1),E_Earth(1:379,2),':r','DisplayName','JPL Earth');
-%plot(Earth_x0(1),Earth_x0(2),'b*');
-plot(Earth_pos(end,1),Earth_pos(end,2),'r*');
-%plot(Jupiter_pos(:,1),Jupiter_pos(:,2),'r');
-%plot(E_Jupiter(1:379,1),E_Jupiter(1:379,2),'--b');
-%h3 = plot(Bennu_pos(:,1),Bennu_pos(:,2),'k','DisplayName','Bennu');
-%plot(E_Bennu(1:379,1),E_Bennu(1:379,2),'--r');
-%plot(Bennu_x0(1),Bennu_x0(2),'k*');
-%plot(Bennu_pos(end,1),Bennu_pos(end,2),'ko');
-h4 = plot(OR_pos(:,1),OR_pos(:,2),'g','DisplayName','Osiris Rex');
-h5 = plot(E_OR(1:379,1),E_OR(1:379,2),'--k','DisplayName','JPL Osiris Rex');
-plot(OR_x0(1),OR_x0(2),'go');
-plot(OR_pos(end,1),OR_pos(end,2),'g*');
-legend([h2 h3 h4 h5],'Location','Northwest');
+figure;axis equal;  hold on; %view(3);
+plot3(Earth_pos(:,1),Earth_pos(:,2),Earth_pos(:,3),'b','DisplayName','Earth');
+h4 = plot3(OR_pos(1:ts(3),1),OR_pos(1:ts(3),2),OR_pos(1:ts(3),3),'g','DisplayName','Osiris Rex');
+h5 = plot3(E_OR(1:ts(3),1),E_OR(1:ts(3),2),E_OR(1:ts(3),3),'--k','DisplayName','JPL Osiris Rex');
+legend('Location','Northwest');
 
-print('orbits','-dpng');
+figure; hold on; axis equal;
+plot3(OR_pos(ts(3):ts(7),1),OR_pos(ts(3):ts(7),2),OR_pos(ts(3):ts(7),3),'g','DisplayName','Osiris Rex');
+plot3(OR_pos(ts(7),1),OR_pos(ts(7),2),OR_pos(ts(7),3),'go');
+plot3(E_OR(ts(3):ts(7),1),E_OR(ts(3):ts(7),2),E_OR(ts(3):ts(7),3),'--k','DisplayName','JPL Osiris Rex');
+plot3(E_OR(ts(7),1),E_OR(ts(7),2),E_OR(ts(7),3),'ko');
+plot3(Bennu_pos(ts(3):ts(7),1),Bennu_pos(ts(3):ts(7),2),Bennu_pos(ts(3):ts(7),3),'r','DisplayName','Bennu');
+plot3(Bennu_pos(ts(7),1),Bennu_pos(ts(7),2),Bennu_pos(ts(7),3),'ro');
+%plot3(E_Bennu(ts(3):ts(7),1),E_Bennu(ts(3):ts(7),2),E_Bennu(ts(3):ts(7),3),':k','DisplayName','JPL Bennu');
+%plot3(E_Bennu(ts(7),1),E_Bennu(ts(7),2),E_Bennu(ts(7),3),'k+');
 
+figure; hold on; axis equal;
+r_OR_pos = OR_pos(ts(7)+2:ts(8),:) - Bennu_pos(ts(7)+2:ts(8),:);
+r_OR_E = E_OR(ts(7):ts(8)-1,:) - E_Bennu(ts(7):ts(8)-1,:);
+h1 = plot3(r_OR_pos(:,1),r_OR_pos(:,2),r_OR_pos(:,3),'g','DisplayName','Osiris Rex');
+h3 = plot3(r_OR_pos(end,1),r_OR_pos(end,2),r_OR_pos(end,3),'go','DisplayName','Ending Position');
+%plot3(r_OR_pos(1,1),r_OR_pos(1,2),r_OR_pos(1,3),'g*');
+h2 = plot3(r_OR_E(:,1),r_OR_E(:,2),r_OR_E(:,3),'--k','DisplayName','JPL Osiris Rex');
+plot3(r_OR_E(end,1),r_OR_E(end,2),r_OR_E(end,3),'ko');
+legend([h1 h2 h3],'Location','Northwest');
+plot3(0,0,0,'k*');
+
+figure; hold on; axis equal;
+h1 = plot3(OR_pos(ts(8):end,1),OR_pos(ts(8):end,2),OR_pos(ts(8):end,3),'g','DisplayName','Osiris Rex');
+h2 = plot3(OR_pos(end,1),OR_pos(end,2),OR_pos(end,3),'go','DisplayName','Ending Position');
+h3 = plot3(E_OR(ts(8):end,1),E_OR(ts(8):end,2),E_OR(ts(8):end,3),'--k','DisplayName','JPL Osiris Rex');
+%plot3(E_OR(end,1),E_OR(end,2),E_OR(end,3),'*k');
+h4 = plot3(Earth_pos(ts(8):end,1),Earth_pos(ts(8):end,2),Earth_pos(ts(8):end,3),'b','DisplayName','Earth');
+%h5 = plot3(E_Earth(ts(8):end,1),E_Earth(ts(8):end,2),E_Earth(ts(8):end,3),'--b','DisplayName','JPL Earth');
+legend('Location','Northwest');
 %% Analyzing
 r = zeros(size(OR_pos,1),1);
 for k = 1:size(OR_pos,1)
-    r(k) = norm(OR_pos(k) - Earth_pos(k));
+    r(k,1) = norm(OR_pos(k,:));
+    r(k,2) = norm(E_OR(k,:));
+    r(k,3) = abs((r(k,1)-r(k,2))/r(k,2).*100);
 end
-test = r < 1e4;
 v = [];
 for k = 1:size(OR_veloc,1)
     v(k,1) = norm(VE_OR(k,:));
     v(k,2) = norm(OR_veloc(k,:));
+    v(k,3) = abs((v(k,1)-v(k,2))/v(k,1).*100);
+    if k > 1
+        v(k,4) = abs(v(k,1)-v(k-1,1))/v(k-1,1).*100;
+        if v(k,4) > 0.4
+            fprintf('delta-V %% of %.3f found on Day %i\n',v(k,4),k);
+        end
+    else
+        v(k,4) = 0;
+    end
 end
+
+%Grabbing vectors
+before_burn = VE_OR(753,:);
+after_burn = VE_OR(754,:);
+bb_u = before_burn./norm(before_burn);
+ab_u = after_burn./norm(after_burn);
+
+test = t./24./3600;
+
+r_arrival = [];
+for k = 1:size(OR_pos,1)
+    r_b = OR_pos(k,:) - Bennu_pos(k,:);
+    r_arrival(k,1) = norm(r_b);
+    r_arrival(k,2) = norm(E_OR(k,:) - E_Bennu(k,:));
+end
+[min_dist tca] = min(r_arrival(:,1));
+[min_dist_jpl tca2] = min(r_arrival(:,2));
+%fprintf('On Day %i Osiris Rex is %.3f km from Bennu.\n',ts(4),norm(r_arrival));
+
+bennu_error = [];
+for k = 1:size(Bennu_pos,1)
+    bennu_error(k,1) = norm(Bennu_pos(k,:));
+    bennu_error(k,2) = norm(E_Bennu(k,:));
+    bennu_error(k,3) = abs(bennu_error(k,2)-bennu_error(k,1))/bennu_error(k,2)*100;
+end
+
+movement_u = OR_pos(540,:) - Bennu_pos(540,:);
+movement_u = movement_u./norm(movement_u);
+
+r_SOI = Bennu.a.*(Bennu.mass/Sun_mass).^(2/5);
