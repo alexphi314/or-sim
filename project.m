@@ -204,3 +204,5 @@ end
 
 movement_u = OR_pos(540,:) - Bennu_pos(540,:);
 movement_u = movement_u./norm(movement_u);
+
+r_SOI = Bennu.a.*(Bennu.mass/Sun_mass).^(2/5);
