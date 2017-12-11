@@ -155,12 +155,6 @@ h3 = plot3(E_OR(ts(8):end,1),E_OR(ts(8):end,2),E_OR(ts(8):end,3),'--k','DisplayN
 h4 = plot3(Earth_pos(ts(8):end,1),Earth_pos(ts(8):end,2),Earth_pos(ts(8):end,3),'b','DisplayName','Earth');
 %h5 = plot3(E_Earth(ts(8):end,1),E_Earth(ts(8):end,2),E_Earth(ts(8):end,3),'--b','DisplayName','JPL Earth');
 legend('Location','Northwest');
-
-% figure; hold on; axis equal;
-% plot(E_OR(:,1),E_OR(:,2),'g');
-% plot(E_Earth(:,1),E_Earth(:,2),'b');
-% plot(E_Bennu(:,1),E_Bennu(:,2),'k');
-
 %% Analyzing
 r = zeros(size(OR_pos,1),1);
 for k = 1:size(OR_pos,1)

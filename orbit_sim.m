@@ -33,7 +33,7 @@ v_infin1 = dvd;
 vp2 = sqrt(2.*u_e./Launch.P+ v_infin1.^2);
 dv1 = vp2-vp;
 
-fprintf('Depart launch orbit with delta-v %.3f km/s. Burn at perigee.\n',dv1);
+fprintf('Hohmann w/ Inclination: Depart launch orbit with delta-v %.3f km/s. Burn at perigee.\n',dv1);
 
 %% Orbit Simulation
 %Positions at Sept 9 2016 07:00:00 UTC
@@ -140,6 +140,8 @@ for k = 2:9
     if ts(k) == 1638
         y0(28:30) = VE_OR(ts(k),:);
         y0(13:15) = E_OR(ts(k),:);
+        OR_dv = (1+1.361/100).*OR_vel(end);
+        fprintf('Implemented DV %.3f km/s on Day %i.\n',1.361/100*norm(OR_vel(end,:)),ts(k));
     end
 end
 end
