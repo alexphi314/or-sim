@@ -115,8 +115,9 @@ for k = 2:9
     end
     
     if ts(k) == 754
-        %OR_dv = (1+1.394/100).*OR_vel(end,:);
-        y0(28:30) = VE_OR(754,:);
+        OR_dv = (1+1.394/100).*OR_vel(end,:);
+        %y0(28:30) = VE_OR(754,:);
+        y0(28:30) = OR_dv;
         y0(13:15) = E_OR(754,:);
         y0(10:12) = E_Bennu(754,:);
         y0(25:27) = VE_Bennu(754,:);
@@ -124,8 +125,8 @@ for k = 2:9
     end
     
     if ts(k) == 768
-        %OR_dv = (1+0.739/100).*OR_vel(end,:)
-        y0(28:30) = VE_OR(768,:);
+        OR_dv = (1+0.739/100).*OR_vel(end,:);
+        y0(28:30) = OR_dv;%VE_OR(768,:);
         fprintf('Implemented DV %.3f km/s on Day %i.\n',0.739/100*norm(OR_vel(end,:)),ts(k));
     end
     

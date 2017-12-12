@@ -7,11 +7,25 @@ function [tot_time, dv_tot] = patchedconic (Bennu,Earth,Launch,Survey,Approach,t
 ra = Earth.a; %Depart at average Earth radius
 rp = Bennu.P;
 at = (rp + ra)./2;
+et = (ra-rp)./(ra+rp);
 
 vde = sqrt(u_s.*(2./ra - 1./Earth.a));
 vdt = sqrt(u_s.*(2./ra - 1./at));
 dvd = abs(sqrt(vdt.^2 + vde.^2 - 2*vdt*vde*cosd(abs(Earth.i-Bennu.i)))); %Transfer insertion and inclination change
 dva = abs(sqrt(u_s.*(2./rp - 1./at)) - sqrt(u_s.*(2./rp - 1./Bennu.a)));
+
+figure; hold on; axis equal;
+set(gca,'DefaultLineLineWidth',2);
+xlabel('(km)');
+ylabel('(km)');
+theta = linspace(0,2*pi);
+theta_t = linspace(pi,2*pi);
+rf_E = Earth.a;
+rf_B = Bennu.a.*(1-Bennu.e.^2)./(1+Bennu.e.*cos(theta));
+rf_t = at.*(1-et.^2)./(1+et.*cos(theta_t));
+plot(rf_E.*cos(theta),rf_E.*sin(theta),'b','DisplayName','Earth');
+plot(rf_B.*cos(theta),rf_B.*sin(theta),'k','DisplayName','Bennu');
+plot(rf_t.*cos(theta_t),rf_t.*sin(theta_t),'g','DisplayName','Departure Hohmann Transfer');
 
 %% Calculate departure burn
 v_infin1 = dvd;
@@ -46,7 +60,7 @@ Tda = 0.5.*T; %sec
 %fprintf('The journey to Bennu will take %.3f days.\n',Tda./24./3600);
 
 %Finding departure angle
-phi_d = pi - Bennu.n.*0.5.*T; %This is the true anomaly of Bennu when the object should be launched from Earth
+phi_d = pi - Bennu.n.*0.5.*T %This is the true anomaly of Bennu when the object should be launched from Earth
 
 %Calculate position of Bennu at launch time
 dt = Launch.JD - Bennu.tp; %days
@@ -79,7 +93,7 @@ deltat = Tda;
 fprintf('At arrival, the true anomaly of Bennu is %.3f rad and the true anomaly of Earth is %.3f.\n',theta_b,theta_e);
 
 %% Calculating Surveying Time
-phi_ret = Earth.n.*Tda - pi;
+phi_ret = Earth.n.*Tda - pi
 [tolerances,~,~] = sim_angle(Earth,Bennu,f_prime,theta_e,theta_b,dt,phi_ret);
 
 [minimum,I] = min(tolerances);
@@ -95,11 +109,19 @@ fprintf('At departure from Bennu, the true anomaly of Bennu is %.3f and the true
 ra = Bennu.Q;
 rp = Earth.a;
 at = (ra + rp)/2;
+et = (ra-rp)./(ra+rp);
+theta_t = linspace(pi,2*pi);
+rft2 = at.*(1-et.^2)./(1+et.*cos(theta_t));
+plot(rft2.*cos(theta_t),rft2.*sin(theta_t),'r','DisplayName','Return Hohmann Transfer');
+legend('Location','Northwest');
+print('patchedconic','-dpng');
 
 vdb = sqrt(u_s.*(2./ra - 1./Bennu.a));
 vdt = sqrt(u_s.*(2./ra - 1./at));
 dvd = abs(sqrt(vdt.^2 + vdb.^2 - 2*vdt*vdb*cosd(abs(Earth.i-Bennu.i)))); %Transfer insertion and inclination change
 dva = abs(sqrt(u_s.*(2./rp - 1./at)) - sqrt(u_s./rp));
+
+
 
 %% Calculating Bennu departure delta v
 v_infin = dvd;

@@ -28,7 +28,7 @@ Bennu.T = 436.6487281874828.*24.*3600; %sec
 Bennu.n = .8244613501895456.*pi./(180.*24.*3600); %rad/s
 Bennu.Q = 1.355887689026542.*au; %km %r_a
 Bennu.P = -Bennu.Q*(Bennu.e-1)/(Bennu.e+1); %km
-Bennu.mass = 6e10; %kg
+Bennu.mass = 0.00014e15; %kg
 
 %Defining Earth orbital parameters
 Earth.e = 0.01671123;
@@ -80,10 +80,10 @@ ts = [0; %Sep 9 2016 // Launch
     111; %Dec 29 2016 // Course Adjustment
     378; %Sep 22 2017 // Earth Fly-by
     540; %Nothing // Remnant
-    754; % Course Adjustment
-    768; %Course Adjustment
-    839; %Aug 17 2018 // Bennu Arrival %Originally 707
-    1638; %Mar 3 2021 // Bennu Departure
+    754; %Oct 3 2018
+    768; %Oct 17 2018
+    839; %Dec 27 2018 // Bennu Arrival %Originally 707
+    1638; %Mar 5 2021 // Bennu Departure
     2571; %Sep 24 2023 // Earth Fly-by
     ];
     
@@ -121,22 +121,36 @@ OR_x0 = E_OR(1,:); %km
 OR_v0 = VE_OR(1,:); %km/s
 
 figure;axis equal;  hold on; %view(3);
+set(gca,'DefaultLineLineWidth',2);
 plot3(Earth_pos(:,1),Earth_pos(:,2),Earth_pos(:,3),'b','DisplayName','Earth');
 h4 = plot3(OR_pos(1:ts(3),1),OR_pos(1:ts(3),2),OR_pos(1:ts(3),3),'g','DisplayName','Osiris Rex');
 h5 = plot3(E_OR(1:ts(3),1),E_OR(1:ts(3),2),E_OR(1:ts(3),3),'--k','DisplayName','JPL Osiris Rex');
 legend('Location','Northwest');
+xlabel('(km)');
+ylabel('(km)');
+print('earthflyby','-dpng');
 
 figure; hold on; axis equal;
+set(gca,'DefaultLineLineWidth',2);
 plot3(OR_pos(ts(3):ts(7),1),OR_pos(ts(3):ts(7),2),OR_pos(ts(3):ts(7),3),'g','DisplayName','Osiris Rex');
-plot3(OR_pos(ts(7),1),OR_pos(ts(7),2),OR_pos(ts(7),3),'go');
+plot3(OR_pos(ts(7),1),OR_pos(ts(7),2),OR_pos(ts(7),3),'go','DisplayName','Osiris Rex Ending Position');
 plot3(E_OR(ts(3):ts(7),1),E_OR(ts(3):ts(7),2),E_OR(ts(3):ts(7),3),'--k','DisplayName','JPL Osiris Rex');
-plot3(E_OR(ts(7),1),E_OR(ts(7),2),E_OR(ts(7),3),'ko');
+plot3(E_OR(ts(7),1),E_OR(ts(7),2),E_OR(ts(7),3),'ko','DisplayName','JPL Osiris Rex Ending Position');
 plot3(Bennu_pos(ts(3):ts(7),1),Bennu_pos(ts(3):ts(7),2),Bennu_pos(ts(3):ts(7),3),'r','DisplayName','Bennu');
-plot3(Bennu_pos(ts(7),1),Bennu_pos(ts(7),2),Bennu_pos(ts(7),3),'ro');
+plot3(Bennu_pos(ts(7),1),Bennu_pos(ts(7),2),Bennu_pos(ts(7),3),'ro','DisplayName','Bennu Ending Position');
 %plot3(E_Bennu(ts(3):ts(7),1),E_Bennu(ts(3):ts(7),2),E_Bennu(ts(3):ts(7),3),':k','DisplayName','JPL Bennu');
 %plot3(E_Bennu(ts(7),1),E_Bennu(ts(7),2),E_Bennu(ts(7),3),'k+');
+legend('Location','Northwest');
+xlabel('(km)');
+ylabel('(km)');
+print('bennuarrival','-dpng');
+plot3(Earth_pos(:,1),Earth_pos(:,2),Earth_pos(:,3),'b','DisplayName','Earth');
+legend('Location','Northwest');
+view(90,0);
+print('side_view','-dpng');
 
 figure; hold on; axis equal;
+set(gca,'DefaultLineLineWidth',2);
 r_OR_pos = OR_pos(ts(7)+2:ts(8),:) - Bennu_pos(ts(7)+2:ts(8),:);
 r_OR_E = E_OR(ts(7):ts(8)-1,:) - E_Bennu(ts(7):ts(8)-1,:);
 h1 = plot3(r_OR_pos(:,1),r_OR_pos(:,2),r_OR_pos(:,3),'g','DisplayName','Osiris Rex');
@@ -146,8 +160,12 @@ h2 = plot3(r_OR_E(:,1),r_OR_E(:,2),r_OR_E(:,3),'--k','DisplayName','JPL Osiris R
 plot3(r_OR_E(end,1),r_OR_E(end,2),r_OR_E(end,3),'ko');
 legend([h1 h2 h3],'Location','Northwest');
 plot3(0,0,0,'k*');
+xlabel('(km)');
+ylabel('(km)');
+print('bennuorbits','-dpng');
 
 figure; hold on; axis equal;
+set(gca,'DefaultLineLineWidth',2);
 h1 = plot3(OR_pos(ts(8):end,1),OR_pos(ts(8):end,2),OR_pos(ts(8):end,3),'g','DisplayName','Osiris Rex');
 h2 = plot3(OR_pos(end,1),OR_pos(end,2),OR_pos(end,3),'go','DisplayName','Ending Position');
 h3 = plot3(E_OR(ts(8):end,1),E_OR(ts(8):end,2),E_OR(ts(8):end,3),'--k','DisplayName','JPL Osiris Rex');
@@ -155,6 +173,23 @@ h3 = plot3(E_OR(ts(8):end,1),E_OR(ts(8):end,2),E_OR(ts(8):end,3),'--k','DisplayN
 h4 = plot3(Earth_pos(ts(8):end,1),Earth_pos(ts(8):end,2),Earth_pos(ts(8):end,3),'b','DisplayName','Earth');
 %h5 = plot3(E_Earth(ts(8):end,1),E_Earth(ts(8):end,2),E_Earth(ts(8):end,3),'--b','DisplayName','JPL Earth');
 legend('Location','Northwest');
+xlabel('(km)');
+ylabel('(km)');
+print('return2earth','-dpng');
+
+figure; hold on; axis equal;
+set(gca,'DefaultLineLineWidth',2);
+plot3(Earth_pos(:,1),Earth_pos(:,2),Earth_pos(:,3),'b','DisplayName','Earth');
+plot3(Bennu_pos(:,1),Bennu_pos(:,2),Bennu_pos(:,3),'k','DisplayName','Bennu');
+plot3(OR_pos(:,1),OR_pos(:,2),OR_pos(:,3),'g','DisplayName','Osiris Rex');
+plot3(OR_pos(1,1),OR_pos(1,2),OR_pos(1,3),'mo','DisplayName','Osiris Rex Starting Position');
+plot3(OR_pos(end,1),OR_pos(end,2),OR_pos(end,3),'r^','DisplayName','Osiris Rex Ending Position');
+legend('Location','Northwest');
+xlabel('(km)');
+ylabel('(km)');
+print('full_mission','-dpng');
+view(90,0);
+print('full_mission_side','-dpng');
 %% Analyzing
 r = zeros(size(OR_pos,1),1);
 for k = 1:size(OR_pos,1)
